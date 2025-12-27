@@ -13,7 +13,7 @@ config_version=5
 config/name="line-edit-complete-godot"
 run/main_scene="res://addons/auto_complete_menu_node/Scenes/line_edit_example.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
-config/icon="res://icon.svg"
+config/icon="res://addons/auto_complete_menu_node/Assets/line-edit-complete-icon.png"
 
 [dotnet]
 

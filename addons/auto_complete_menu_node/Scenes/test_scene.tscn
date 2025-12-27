@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3 uid="uid://wcenqew6s60t"]
+[gd_scene load_steps=2 format=3 uid="uid://vl7st7q8ks0k"]
 
 [ext_resource type="Script" path="res://addons/auto_complete_menu_node/Scripts/auto_complete_assistant.gd" id="1_ltpj7"]
 
@@ -10,11 +10,9 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Auto Complete Assistant" type="Node" parent="." node_paths=PackedStringArray("line_edits", "menu_location_node")]
+[node name="Auto Complete Assistant" type="Node" parent="." node_paths=PackedStringArray("menu_location_node")]
 script = ExtResource("1_ltpj7")
-line_edits = [NodePath("../LineEdit")]
 menu_location_node = NodePath("..")
-terms_file_path = "res://addons/auto_complete_menu_node/example_terms_file.json"
 disable_north = true
 disable_east = true
 disable_west = true
