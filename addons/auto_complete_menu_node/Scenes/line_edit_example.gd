@@ -64,15 +64,16 @@ func _ready() -> void:
 # ########################################################################### #
 #region
 func _on_makes_line_edit_text_submitted(new_text: String) -> void:
+	var array = []
+	var path = ""
 	match _makes_line.text:
 		_FORD:				# (another) array example
-			var models = ["Focus", "Model T", "Ranger"]
-			_autocomplete.load_terms(_models_line, models, "", true)
+			array = ["Focus", "Model T", "Ranger"]
 		_HONDA:				# json example
-			var path = "res://addons/auto_complete_menu_node/Scenes/honda_models.json"
-			_autocomplete.load_terms(_models_line, [], path, true)
+			path = "res://addons/auto_complete_menu_node/Scenes/honda_models.json"
 		_TOYOTA:			# txt example
-			var path = "res://addons/auto_complete_menu_node/Scenes/toyota_models.txt"
-			_autocomplete.load_terms(_models_line, [], path, true)
+			path = "res://addons/auto_complete_menu_node/Scenes/toyota_models.txt"
+	
+	_autocomplete.load_terms(_models_line, array, path, true)
 
 #endregion
