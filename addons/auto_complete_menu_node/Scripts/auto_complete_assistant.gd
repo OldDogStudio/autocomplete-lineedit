@@ -37,20 +37,14 @@ var _complete_menu : Resource = preload("res://addons/auto_complete_menu_node/Sc
 
 
 
-# ########################################################################### #
-#    E N G I N E    F U N C T I O N S
-# ########################################################################### #
-#region
+#region Engine Functions
 func _ready() -> void:
 	pass
 
 #endregion
 
 
-# ################################################################################################ #
-#    P U B L I C    F U N C T I O N S
-# ################################################################################################ #
-#region
+#region Public Functions
 # Adds LineEdit to provide autocompletion for and subsequently creates the CompleteMenu for it
 func add_lineedit(line: LineEdit, terms: Array, source: String = ""):
 	if _lineedit_data.has(line):
@@ -60,9 +54,11 @@ func add_lineedit(line: LineEdit, terms: Array, source: String = ""):
 	# CompleteMenu component
 	var new_menu = _create_complete_menu(line)
 	# Connect signals
-	menu_location_node.resized.connect(new_menu.resize)
-	new_menu.resized.connect(new_menu.resize)
-	line.focus_entered.connect(new_menu.show_menu)
+	menu_location_node.resized.connect(func(): new_menu.resize_for_lineedit(line.size, line.global_position, line.get_global_rect()))
+	line.resized.connect(func(): new_menu.resize_for_lineedit(line.size, line.global_position, line.get_global_rect()))
+	line.focus_entered.connect(func(): 
+		new_menu.resize_for_lineedit(line.size, line.global_position, line.get_global_rect())
+		new_menu.show_menu(line.caret_column))
 	line.focus_exited.connect(new_menu.hide_menu)
 	line.text_changed.connect(_on_text_changed.bind(line))
 	
@@ -82,10 +78,16 @@ func add_lineedit(line: LineEdit, terms: Array, source: String = ""):
 	# Populate menu
 	new_menu.load_terms(final_terms)
 	
+	# Connect all option buttons to signal receiver
+	for button in new_menu.get_term_option_buttons(CompleteMenu.OPTION_CONTAINERS.ALL):
+		if not button.option_chosen.is_connected(_on_option_chosen):
+			button.option_chosen.connect(_on_option_chosen.bind(line, new_menu))
+	
 	# Hide until needed
 	new_menu.hide_menu(true)
 
 
+# Add/Replace terms to a LineEdit's predictive terms. Can use both Array and source String.
 func load_terms(line: LineEdit, terms: Array, source: String = "", replace: bool = false) -> void:
 	var final_terms = []
 	if not terms.is_empty():
@@ -98,7 +100,7 @@ func load_terms(line: LineEdit, terms: Array, source: String = "", replace: bool
 		_lineedit_data[line]["terms"] = final_terms
 	else:
 		_lineedit_data[line]["terms"].append_array(final_terms)
-	_lineedit_data[line]["menu"].load_terms(final_terms)
+	_lineedit_data[line]["menu"].load_terms(final_terms, true)
 
 
 # Remove a LineEdit from autocompletion support.
@@ -112,10 +114,7 @@ func remove_edit(line: LineEdit):
 #endregion
 
 
-# ################################################################################################ #
-#    P R I V A T E    F U N C T I O N S
-# ################################################################################################ #
-#region
+#region Private Functions
 func _create_complete_menu(line: LineEdit) -> CompleteMenu:
 	var new_menu: CompleteMenu = _complete_menu.instantiate()
 	add_child(new_menu)
@@ -124,9 +123,14 @@ func _create_complete_menu(line: LineEdit) -> CompleteMenu:
 	var location_info = _get_location_boundaries(line) # 0 is main direction as int (from enum) 1 is sub-direction so if north or south greater (for east-west) is max_size vector
 	var direction = location_info[0]
 	var placement_point = _get_menu_placement_vec(line, direction)
-	new_menu.use_edit_font_size = use_edit_font_size
+	var font_size = 0
+	if use_edit_font_size:
+		font_size = line.get_theme_font_size("font_size")
+		if not font_size:
+			font_size = line.get_theme_default_font_size()
 	new_menu.set_transform_values(margin, size_min, size_mult)
-	new_menu.set_up_menu(placement_point, direction, location_info[1], location_info[2], line)
+	new_menu.set_up_menu(placement_point, direction, location_info[1], location_info[2], line.size, \
+			line.get_path(), font_size)
 	
 	return new_menu
 
@@ -178,7 +182,7 @@ func _get_menu_placement_vec(line: LineEdit, direction):
 		_:
 			result = edit_rect.position
 		
-	# TODO: add margins or stuff
+	# TODO: add margins or stuff -Lenrow
 	return result
 
 
@@ -186,19 +190,23 @@ func _load_terms_from_file(file_path: String) -> Array:
 	var result = []
 	var file = FileAccess.open(file_path, FileAccess.READ)
 	if file:
+		var ext = file_path.get_extension()
 		var terms = file.get_as_text()
 		file.close()
-		var json_object = JSON.parse_string(terms)
-		if json_object != null:
-			if typeof(json_object) == TYPE_ARRAY:
-				result = json_object
-			elif typeof(json_object) == TYPE_DICTIONARY:
-				if json_object.has("terms"):
-					result = json_object["terms"]
-		else:
-			terms = terms.split("\n")
-			result = Array(terms).filter(func(line): return not line.is_empty())
-			#result = terms.split("\n").filter(func(line): return not line.is_empty())
+		match ext:
+			&"json":
+				var json_object = JSON.parse_string(terms)
+				if json_object != null:
+					if typeof(json_object) == TYPE_ARRAY:
+						result = json_object
+					elif typeof(json_object) == TYPE_DICTIONARY:
+						if json_object.has("terms"):
+							result = json_object["terms"]
+			&"txt":
+				terms = terms.split("\n")
+				result = Array(terms).filter(func(line): return not line.is_empty())
+			_:
+				assert(false, "Attempting to load terms from unexpected file type: %s" % ext)
 	else:
 		assert(false, "ERROR: terms file path is invalid: %s" % file_path)
 	
@@ -207,14 +215,25 @@ func _load_terms_from_file(file_path: String) -> Array:
 #endregion
 
 
-# ########################################################################### #
-#    S I G N A L    R E C E I V E R S
-# ########################################################################### #
-#region
+#region Signal Receivers
+func _on_option_chosen(text: String, line: LineEdit, menu: CompleteMenu) -> void:
+	var result = menu.on_option_chosen(text, line.text, line.caret_column) 
+	line.text = result["text"]
+	line.grab_focus()
+	line.caret_column = result["caret"]
+
+
 # If LMB selects CompleteMenu button, LineEdit.text_changed is emitted but not LineEdit.text_submitted.
-# Use this receiver to trigger any 
+# Use this receiver to trigger any function you may want to fire without requiring the user to do more input.
 func _on_text_changed(new_text: String, line: LineEdit) -> void:
 	if new_text in _lineedit_data[line]["terms"]:
 		line.text_submitted.emit(new_text)
+	else:
+		_lineedit_data[line]["menu"].refresh_nodes(new_text, line.caret_column)
+		_lineedit_data[line]["menu"].resize_for_lineedit(line.size, line.global_position, line.get_global_rect())
+
+
+func _on_resized(line: LineEdit) -> void:
+	_lineedit_data[line]["menu"].resize_for_lineedit(line.size, line.global_position, line.get_global_rect())
 
 #endregion

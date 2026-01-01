@@ -7,6 +7,7 @@ extends Control
 # constants
 const _FORD = "Ford"
 const _HONDA = "Honda"
+const _MAZDA = "Mazda"
 const _TOYOTA = "Toyota"
 
 # export vars
@@ -32,7 +33,7 @@ func _init():
 
 func _ready() -> void:
 	# setup MakeLineEdit
-	_autocomplete.add_lineedit(_makes_line, [_FORD, _HONDA, _TOYOTA])
+	_autocomplete.add_lineedit(_makes_line, [_FORD, _HONDA, _MAZDA, _TOYOTA])
 	# setup ModelsLineEdit
 	_autocomplete.add_lineedit(_models_line, [])
 
@@ -69,8 +70,10 @@ func _on_makes_line_edit_text_submitted(new_text: String) -> void:
 	match _makes_line.text:
 		_FORD:				# (another) array example
 			array = ["Focus", "Model T", "Ranger"]
-		_HONDA:				# json example
+		_HONDA:				# json dictionary example
 			path = "res://addons/auto_complete_menu_node/Scenes/honda_models.json"
+		_MAZDA:				# json array example
+			path = "res://addons/auto_complete_menu_node/Scenes/mazda_models.json"
 		_TOYOTA:			# txt example
 			path = "res://addons/auto_complete_menu_node/Scenes/toyota_models.txt"
 	
