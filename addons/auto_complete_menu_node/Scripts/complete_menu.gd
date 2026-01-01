@@ -174,8 +174,8 @@ func refresh_nodes(text: String, caret_column: int = 0) -> void:
 	if text.is_empty():
 		_visible_nodes = _all_nodes
 	else:
-		_visible_nodes = _all_nodes.filter(func(x): return text in _get_option_text(x))
-		for node in _all_nodes.filter(func(x): return not text in _get_option_text(x)):
+		_visible_nodes = _all_nodes.filter(func(x): return text.to_lower() in _get_option_text(x).to_lower())
+		for node in _all_nodes.filter(func(x): return not text.to_lower() in _get_option_text(x).to_lower()):
 			node.visible = false
 	_visible_nodes.assign(_visible_nodes.map(func(x): x.visible = true; return x))
 	
