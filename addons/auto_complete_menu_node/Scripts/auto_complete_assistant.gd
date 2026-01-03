@@ -219,7 +219,7 @@ func _load_terms_from_file(file_path: String) -> Array:
 
 #region Signal Receivers
 func _on_focuse_entered(line: LineEdit) -> void:
-	var menu : CompleteMenu= _lineedit_data[line]["menu"]
+	var menu : CompleteMenu = _lineedit_data[line]["menu"]
 	menu.resize_for_lineedit(line.size, line.global_position, line.get_global_rect())
 	if line.text.length() >= min_char_for_suggestions:
 		menu.show_menu(line.caret_column)
@@ -230,8 +230,11 @@ func _on_focuse_entered(line: LineEdit) -> void:
 func _on_option_chosen(text: String, line: LineEdit, menu: CompleteMenu) -> void:
 	var result = menu.on_option_chosen(text, line.text, line.caret_column) 
 	line.text = result["text"]
+	# Known Godot issue inherited by Redot--sometimes text_changed won't emit when text programtically changed.
+	line.text_changed.emit(line.text)
 	line.grab_focus()
 	line.caret_column = result["caret"]
+	menu.hide_menu(true)
 
 
 # If LMB selects CompleteMenu button, LineEdit.text_changed is emitted but not LineEdit.text_submitted.
