@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://rphyeuffx7cl"]
 
-[ext_resource type="Theme" uid="uid://d1ff85lu8qqwm" path="res://addons/lineedit_autocomplete_node/Assets/base_theme.tres" id="1_d2uxr"]
-[ext_resource type="Script" path="res://addons/lineedit_autocomplete_node/Scripts/autocomplete_option.gd" id="1_rx7ct"]
+[ext_resource type="Script" path="res://addons/lineedit_autocomplete_node/autocomplete_option.gd" id="1_763x1"]
+[ext_resource type="Theme" uid="uid://d1ff85lu8qqwm" path="res://addons/lineedit_autocomplete_node/Assets/base_theme.tres" id="2_vi8p1"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_un4au"]
 font_color = Color(0.572988, 0.572988, 0.572988, 1)
@@ -14,7 +14,7 @@ grow_horizontal = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 color = Color(0.129558, 0.129558, 0.129558, 1)
-script = ExtResource("1_rx7ct")
+script = ExtResource("1_763x1")
 
 [node name="CompleteText" type="Label" parent="."]
 layout_mode = 1
@@ -37,6 +37,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("1_d2uxr")
+theme = ExtResource("2_vi8p1")
 
 [connection signal="pressed" from="Button" to="." method="_on_button_pressed"]

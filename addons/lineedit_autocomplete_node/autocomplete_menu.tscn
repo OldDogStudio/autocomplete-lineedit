@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://cebls7f645328"]
 
-[ext_resource type="Script" path="res://addons/lineedit_autocomplete_node/Scripts/autocomplete_menu.gd" id="1_tjodh"]
-[ext_resource type="Theme" uid="uid://d1ff85lu8qqwm" path="res://addons/lineedit_autocomplete_node/Assets/base_theme.tres" id="2_auq2y"]
+[ext_resource type="Script" path="res://addons/lineedit_autocomplete_node/autocomplete_menu.gd" id="1_n2mem"]
+[ext_resource type="Theme" uid="uid://d1ff85lu8qqwm" path="res://addons/lineedit_autocomplete_node/Assets/base_theme.tres" id="2_ltxqv"]
 
 [node name="CompleteMenu" type="Control"]
 layout_mode = 3
@@ -10,7 +10,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_tjodh")
+script = ExtResource("1_n2mem")
 
 [node name="ScrollContainer" type="ScrollContainer" parent="."]
 layout_mode = 1
@@ -19,7 +19,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-theme = ExtResource("2_auq2y")
+theme = ExtResource("2_ltxqv")
 follow_focus = true
 
 [node name="OptionHolder" type="Control" parent="ScrollContainer"]

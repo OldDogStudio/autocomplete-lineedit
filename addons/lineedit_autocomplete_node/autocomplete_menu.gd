@@ -106,7 +106,7 @@ func load_terms(terms: Array, override_terms: bool = false) -> void:
 	if override_terms:
 		_remove_terms(_all_active_terms)
 	if terms:
-		var option_scene = preload("res://addons/lineedit_autocomplete_node/Scenes/autocomplete_option.tscn")
+		var option_scene = preload("res://addons/lineedit_autocomplete_node/autocomplete_option.tscn")
 		var base_option = option_scene.instantiate()
 		var label_settings_obj = base_option.get_node("CompleteText").label_settings
 		label_settings_obj.font_size = _font_size
