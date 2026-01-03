@@ -17,9 +17,12 @@ const _TOYOTA = "Toyota"
 # private vars
 
 # onready vars
-@onready var _autocomplete : AutoCompleteAssistant = find_child("AutoCompleteAssistant")
+@onready var _autocomplete_make_model : AutoCompleteAssistant = find_child("AutoCompleteAssistant")
+@onready var _autocomplete_power_trans : AutoCompleteAssistant = find_child("AutoCompleteAssistant2")
 @onready var _makes_line: LineEdit = find_child("MakesLineEdit")
 @onready var _models_line: LineEdit = find_child("ModelsLineEdit")
+@onready var _power_line: LineEdit = find_child("PowerLineEdit")
+@onready var _trans_line: LineEdit = find_child("TransmissionLineEdit")
 
 
 
@@ -33,9 +36,13 @@ func _init():
 
 func _ready() -> void:
 	# setup MakeLineEdit
-	_autocomplete.add_lineedit(_makes_line, [_FORD, _HONDA, _MAZDA, _TOYOTA])
+	_autocomplete_make_model.add_lineedit(_makes_line, [_FORD, _HONDA, _MAZDA, _TOYOTA])
 	# setup ModelsLineEdit
-	_autocomplete.add_lineedit(_models_line, [])
+	_autocomplete_make_model.add_lineedit(_models_line, [])
+	# setup PowerLineEdit
+	_autocomplete_power_trans.add_lineedit(_power_line, ["Gasoline Engine", "Diesel Engine", "Electric", "Hybrid"])
+	# setup TransmissionLineEdit
+	_autocomplete_power_trans.add_lineedit(_trans_line, ["Discrete Automatic", "Continuously-Variable Automatic", "Manual"])
 
 
 #func _process(delta: float) -> void:
@@ -77,6 +84,6 @@ func _on_makes_line_edit_text_submitted(new_text: String) -> void:
 		_TOYOTA:			# txt example
 			path = "res://addons/auto_complete_menu_node/Scenes/toyota_models.txt"
 	
-	_autocomplete.load_terms(_models_line, array, path, true)
+	_autocomplete_make_model.load_terms(_models_line, array, path, true)
 
 #endregion

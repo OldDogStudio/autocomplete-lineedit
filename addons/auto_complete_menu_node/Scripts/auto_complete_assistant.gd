@@ -125,11 +125,11 @@ func _create_complete_menu(line: LineEdit) -> CompleteMenu:
 	var location_info = _get_location_boundaries(line) # 0 is main direction as int (from enum) 1 is sub-direction so if north or south greater (for east-west) is max_size vector
 	var direction = location_info[0]
 	var placement_point = _get_menu_placement_vec(line, direction)
-	var font_size = 0
+	var font_size = line.get_theme_default_font_size()
 	if use_edit_font_size:
-		font_size = line.get_theme_font_size("font_size")
-		if not font_size:
-			font_size = line.get_theme_default_font_size()
+		var theme_font = line.get_theme_font_size("font_size")
+		if theme_font:
+			font_size = theme_font
 	new_menu.set_transform_values(margin, size_min, size_mult)
 	new_menu.set_up_menu(placement_point, direction, location_info[1], location_info[2], line.size, \
 			line.get_path(), font_size)
