@@ -6,6 +6,9 @@ extends Node
 #    retained comments have been accredited to Lenrow.
 # ########################################################################### #
 
+const _MENU : String = "menu"
+const _TERMS : String = "terms"
+
 ## "defines in which node the menu should be located. [br]
 ## This node has to contain the line_edit(s) you want it to appear for. [br]
 ## Not necessarily as a parent but the edits must intersect with its global_rect
@@ -73,7 +76,7 @@ func add_lineedit(line: LineEdit, terms: Array, source: String = ""):
 		final_terms.append_array(file_terms)
 	
 	# Update dictionary
-	_lineedit_data[line] = {"terms": final_terms, "menu": new_menu}
+	_lineedit_data[line] = {_TERMS: final_terms, _MENU: new_menu}
 	
 	# Populate menu
 	new_menu.load_terms(final_terms)
@@ -97,13 +100,13 @@ func load_terms(line: LineEdit, terms: Array, source: String = "", replace: bool
 			final_terms.append_array(_load_terms_from_file(source))
 	
 	if replace:
-		_lineedit_data[line]["terms"] = final_terms
+		_lineedit_data[line][_TERMS] = final_terms
 	else:
-		_lineedit_data[line]["terms"].append_array(final_terms)
-	_lineedit_data[line]["menu"].load_terms(final_terms, true)
+		_lineedit_data[line][_TERMS].append_array(final_terms)
+	_lineedit_data[line][_MENU].load_terms(final_terms, true)
 	
 	# Connect all option buttons to signal receiver
-	var menu : CompleteMenu = _lineedit_data[line]["menu"]
+	var menu : CompleteMenu = _lineedit_data[line][_MENU]
 	for button in menu.get_term_option_buttons(CompleteMenu.OPTION_CONTAINERS.ALL):
 		if not button.option_chosen.is_connected(_on_option_chosen):
 			button.option_chosen.connect(_on_option_chosen.bind(line, menu))
@@ -112,7 +115,7 @@ func load_terms(line: LineEdit, terms: Array, source: String = "", replace: bool
 # Remove a LineEdit from autocompletion support.
 func remove_edit(line: LineEdit):
 	if _lineedit_data.has(line):
-		_lineedit_data[line]["menu"].queue_free()
+		_lineedit_data[line][_MENU].queue_free()
 		_lineedit_data.erase(line)
 	else:
 		assert(false, "ERROR: trying to remove an edit that has no complete menu")
@@ -207,8 +210,8 @@ func _load_terms_from_file(file_path: String) -> Array:
 					if typeof(json_object) == TYPE_ARRAY:
 						result = json_object
 					elif typeof(json_object) == TYPE_DICTIONARY:
-						if json_object.has("terms"):
-							result = json_object["terms"]
+						if json_object.has(_TERMS):
+							result = json_object[_TERMS]
 			&"txt":
 				terms = terms.split("\n")
 				result = Array(terms).filter(func(line): return not line.is_empty())
@@ -224,7 +227,7 @@ func _load_terms_from_file(file_path: String) -> Array:
 
 #region Signal Receivers
 func _on_focus_entered(line: LineEdit) -> void:
-	var menu : CompleteMenu = _lineedit_data[line]["menu"]
+	var menu : CompleteMenu = _lineedit_data[line][_MENU]
 	menu.resize_for_lineedit(line.size, line.global_position, line.get_global_rect())
 	if line.text.length() >= min_char_for_suggestions:
 		menu.show_menu(line.caret_column)
@@ -245,9 +248,9 @@ func _on_option_chosen(text: String, line: LineEdit, menu: CompleteMenu) -> void
 # If LMB selects CompleteMenu button, LineEdit.text_changed is emitted but not LineEdit.text_submitted.
 # Use this receiver to trigger any function you may want to fire without requiring the user to do more input.
 func _on_text_changed(new_text: String, line: LineEdit) -> void:
-	var menu : CompleteMenu = _lineedit_data[line]["menu"]
+	var menu : CompleteMenu = _lineedit_data[line][_MENU]
 	
-	if new_text in _lineedit_data[line]["terms"]:
+	if new_text in _lineedit_data[line][_TERMS]:
 		line.text_submitted.emit(new_text)
 	else:
 		menu.refresh_nodes(new_text, line.caret_column)
@@ -259,6 +262,6 @@ func _on_text_changed(new_text: String, line: LineEdit) -> void:
 		menu.hide_menu(true)
 
 func _on_resized(line: LineEdit) -> void:
-	_lineedit_data[line]["menu"].resize_for_lineedit(line.size, line.global_position, line.get_global_rect())
+	_lineedit_data[line][_MENU].resize_for_lineedit(line.size, line.global_position, line.get_global_rect())
 
 #endregion

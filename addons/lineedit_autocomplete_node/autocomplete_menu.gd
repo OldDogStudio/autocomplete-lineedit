@@ -116,7 +116,6 @@ func load_terms(terms: Array, override_terms: bool = false) -> void:
 			var option = base_option.duplicate()
 			_option_holder.add_child(option)
 			option.get_node("CompleteText").text = term
-			#option.get_node("Button").option_chosen.connect(_on_option_chosen)
 			_all_nodes.append(option)
 	
 	_all_active_terms.append_array(terms)
@@ -209,7 +208,7 @@ func set_transform_values(margin: int, min_size: Vector2, mult_size: Vector2) ->
 
 
 func set_up_menu(placement_point: Vector2, direction_main: Enums.Direction, direction_sub: Enums.Direction, \
-		maximum_size: Vector2, line_size: Vector2, line_path: NodePath, font_size: int) -> void:
+			maximum_size: Vector2, line_size: Vector2, line_path: NodePath, font_size: int) -> void:
 	_main_direction = direction_main
 	_anchor_point = placement_point
 	_grow_upwards = direction_sub == Enums.Direction.NORTH
@@ -285,7 +284,7 @@ func _remove_terms(terms: Array) -> void:
 func _reposition_nodes(ordered_nodes: Array[Control]) -> void:
 	_visible_nodes = ordered_nodes
 	var holder_size = _node_size_y
-	var grow_indicator = -1 if _grow_upwards else 1 # used instead of if-else everytime addition/subtraction is used
+	var grow_indicator = -1 if _grow_upwards else 1 # used instead of if-else everytime addition/subtraction is used -Lenrow
 	_option_holder.set_custom_minimum_size(Vector2(0, holder_size))
 	var current_position = Vector2(0, holder_size) if _grow_upwards else Vector2(0, 0)
 	for node in ordered_nodes:
