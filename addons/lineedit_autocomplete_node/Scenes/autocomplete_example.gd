@@ -17,8 +17,8 @@ const _TOYOTA = "Toyota"
 # private vars
 
 # onready vars
-@onready var _autocomplete_make_model : AutoCompleteAssistant = find_child("AutoCompleteAssistant")
-@onready var _autocomplete_power_trans : AutoCompleteAssistant = find_child("AutoCompleteAssistant2")
+@onready var _autocomplete_make_model = find_child("AutoCompleteAssistant")
+@onready var _autocomplete_power_trans = find_child("AutoCompleteAssistant2")
 @onready var _makes_line: LineEdit = find_child("MakesLineEdit")
 @onready var _models_line: LineEdit = find_child("ModelsLineEdit")
 @onready var _power_line: LineEdit = find_child("PowerLineEdit")
@@ -78,11 +78,11 @@ func _on_makes_line_edit_text_submitted(new_text: String) -> void:
 		_FORD:				# (another) array example
 			array = ["Focus", "Model T", "Ranger"]
 		_HONDA:				# json dictionary example
-			path = "res://addons/auto_complete_menu_node/Scenes/honda_models.json"
+			path = "res://addons/lineedit_autocomplete_node/Scenes/honda_models.json"
 		_MAZDA:				# json array example
-			path = "res://addons/auto_complete_menu_node/Scenes/mazda_models.json"
+			path = "res://addons/lineedit_autocomplete_node/Scenes/mazda_models.json"
 		_TOYOTA:			# txt example
-			path = "res://addons/auto_complete_menu_node/Scenes/toyota_models.txt"
+			path = "res://addons/lineedit_autocomplete_node/Scenes/toyota_models.txt"
 	
 	_autocomplete_make_model.load_terms(_models_line, array, path, true)
 

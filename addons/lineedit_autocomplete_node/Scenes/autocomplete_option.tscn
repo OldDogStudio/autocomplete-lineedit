@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://rphyeuffx7cl"]
 
-[ext_resource type="Theme" uid="uid://d1ff85lu8qqwm" path="res://addons/auto_complete_menu_node/Assets/base_theme.tres" id="1_d2uxr"]
-[ext_resource type="Script" path="res://addons/auto_complete_menu_node/Scripts/complete_option.gd" id="1_rx7ct"]
+[ext_resource type="Theme" uid="uid://d1ff85lu8qqwm" path="res://addons/lineedit_autocomplete_node/Assets/base_theme.tres" id="1_d2uxr"]
+[ext_resource type="Script" path="res://addons/lineedit_autocomplete_node/Scripts/autocomplete_option.gd" id="1_rx7ct"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_un4au"]
 font_color = Color(0.572988, 0.572988, 0.572988, 1)

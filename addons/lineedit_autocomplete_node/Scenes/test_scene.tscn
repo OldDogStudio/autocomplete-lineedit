@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://vl7st7q8ks0k"]
 
-[ext_resource type="Script" path="res://addons/auto_complete_menu_node/Scripts/auto_complete_assistant.gd" id="1_ltpj7"]
+[ext_resource type="Script" path="res://addons/lineedit_autocomplete_node/Scripts/lineedit_autocomplete_assistant.gd" id="1_ltpj7"]
 
 [node name="Control" type="Control"]
 layout_mode = 3

@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://n2fi3ino4irj"
-path="res://.godot/imported/line-edit-complete-icon.png-f6126def5ceb95c9e3db1d296e3041fd.ctex"
+path="res://.godot/imported/lineedit-autocomplete-icon.png-bd9aec9414f69533296d13fc1449c92f.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/auto_complete_menu_node/Assets/line-edit-complete-icon.png"
-dest_files=["res://.godot/imported/line-edit-complete-icon.png-f6126def5ceb95c9e3db1d296e3041fd.ctex"]
+source_file="res://addons/lineedit_autocomplete_node/Assets/lineedit-autocomplete-icon.png"
+dest_files=["res://.godot/imported/lineedit-autocomplete-icon.png-bd9aec9414f69533296d13fc1449c92f.ctex"]
 
 [params]
 

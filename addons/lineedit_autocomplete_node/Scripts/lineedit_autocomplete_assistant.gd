@@ -1,5 +1,4 @@
 @tool
-class_name AutoCompleteAssistant
 extends Node
 
 # ########################################################################### #
@@ -34,7 +33,7 @@ extends Node
 # inner-value2: CompleteMenu reference
 # {LineEdit-1: {"terms": ["term1", "term2",], "menu": CompleteMenu-1}, LineEdit-2: {"terms": ["term3...
 var _lineedit_data : Dictionary = {}
-var _complete_menu : Resource = preload("res://addons/auto_complete_menu_node/Scenes/complete_menu.tscn")
+var _complete_menu : Resource = preload("res://addons/lineedit_autocomplete_node/Scenes/autocomplete_menu.tscn")
 
 
 
