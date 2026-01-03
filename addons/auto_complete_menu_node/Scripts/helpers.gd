@@ -4,21 +4,23 @@ extends Object
 
 const DIRECTION_STRINGS = ["NORTH", "EAST", "SOUTH", "WEST"]
 
+
+
 ## calculates the free space in 4 direction of a rect that should be within another rect. [br]
 ## [param sub_rect] is the rect that should be contained within the [param top_rect].[br]
 ## [b]returns[/b] Dictionary with each directional value with the keys [b]["NORTH", "EAST", "SOUTH", "WEST"][/b] [br]
 ## You can also access an Array of the 4 values arranged in NESW order with the key [b]["Values"][/b].
+## Lenrow^
 static func calculate_sub_rect_space(sub_rect, top_rect):
 	var directions_dict = {}
-
 	var position_rel = sub_rect.position - top_rect.position
 	var directions = [position_rel.y , 0, 0, position_rel.x] # add north and west
+	
 	directions[1] = top_rect.size.x - (position_rel.x + sub_rect.size.x) # add east
 	directions[2] = top_rect.size.y - (position_rel.y + sub_rect.size.y) # add south
-
+	
 	for i in DIRECTION_STRINGS.size(): # add values to dict
 		directions_dict[DIRECTION_STRINGS[i]] = directions[i]
-
 	directions_dict["Values"] = directions
 	return directions_dict
 
@@ -27,12 +29,12 @@ static func calculate_sub_rect_space(sub_rect, top_rect):
 ## Values with area >= 0 or with size values under the [param size_threshold] will be returned as [b]null[/b]. [br]
 ## [param size_threshold] is a Vector2 and can be set,
 ## so all returned rects must have a higher-equal x/y value than specified in the vector.[br]
+## Lenrow^
 static func subtract_rects(base_rect: Rect2, sub_rect: Rect2, size_threshold: Vector2 = Vector2(0, 0)) -> Dictionary:
 	var directions_dict = calculate_sub_rect_space(sub_rect, base_rect)
 	var direction_rects = directions_dict["Values"]
-
 	var return_dict = {}
-
+	
 	for i in direction_rects.size():
 		# calculate rect_position
 		var rect_pos = base_rect.position
@@ -50,13 +52,12 @@ static func subtract_rects(base_rect: Rect2, sub_rect: Rect2, size_threshold: Ve
 		
 		rect_size = rect_size.max(Vector2(0, 0))
 		direction_rects[i] = Rect2(rect_pos, rect_size)
-
+		
 		return_dict[DIRECTION_STRINGS[i]] = direction_rects[i] # add rect to return_dict
-
+	
 	return_dict["Values"] = direction_rects # add final rect array to return_dict
 	return return_dict
-		
-	
+
 
 static func print_collection(collection, name="Collection", add_separator=false, sep_max = 100):
 	var type_collection = typeof(collection)
@@ -76,10 +77,10 @@ static func print_collection(collection, name="Collection", add_separator=false,
 		if value_line.length() > max_size:
 			max_size = value_line.length()
 		print_str += value_line
-
+	
 	max_size = min(max_size, sep_max)
-
+	
 	if add_separator:
 		print_str = "\n".lpad(max_size, "-") + print_str + "\n".lpad(max_size, "-")
-
+	
 	print(print_str)
