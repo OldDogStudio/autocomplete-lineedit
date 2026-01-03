@@ -103,6 +103,12 @@ func load_terms(line: LineEdit, terms: Array, source: String = "", replace: bool
 	else:
 		_lineedit_data[line]["terms"].append_array(final_terms)
 	_lineedit_data[line]["menu"].load_terms(final_terms, true)
+	
+	# Connect all option buttons to signal receiver
+	var menu : CompleteMenu = _lineedit_data[line]["menu"]
+	for button in menu.get_term_option_buttons(CompleteMenu.OPTION_CONTAINERS.ALL):
+		if not button.option_chosen.is_connected(_on_option_chosen):
+			button.option_chosen.connect(_on_option_chosen.bind(line, menu))
 
 
 # Remove a LineEdit from autocompletion support.

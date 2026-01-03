@@ -85,7 +85,7 @@ func get_term_option_buttons(list: OPTION_CONTAINERS) -> Array:
 			pass
 	
 	for option in source:
-		result.append(option.find_child("Button"))
+		result.append(option)
 	
 	return result
 

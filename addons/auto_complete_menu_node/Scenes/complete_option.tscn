@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://rphyeuffx7cl"]
 
-[ext_resource type="Script" path="res://addons/auto_complete_menu_node/Scripts/option_button.gd" id="1_5a4qr"]
 [ext_resource type="Theme" uid="uid://d1ff85lu8qqwm" path="res://addons/auto_complete_menu_node/Assets/base_theme.tres" id="1_d2uxr"]
+[ext_resource type="Script" path="res://addons/auto_complete_menu_node/Scripts/complete_option.gd" id="1_rx7ct"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_un4au"]
 font_color = Color(0.572988, 0.572988, 0.572988, 1)
@@ -14,6 +14,7 @@ grow_horizontal = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 color = Color(0.129558, 0.129558, 0.129558, 1)
+script = ExtResource("1_rx7ct")
 
 [node name="CompleteText" type="Label" parent="."]
 layout_mode = 1
@@ -37,4 +38,5 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("1_d2uxr")
-script = ExtResource("1_5a4qr")
+
+[connection signal="pressed" from="Button" to="." method="_on_button_pressed"]
