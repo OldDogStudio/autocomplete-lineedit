@@ -1,22 +1,10 @@
 extends Control
 
-# signals
-
-# enums
-
-# constants
 const _FORD = "Ford"
 const _HONDA = "Honda"
 const _MAZDA = "Mazda"
 const _TOYOTA = "Toyota"
 
-# export vars
-
-# public vars
-
-# private vars
-
-# onready vars
 @onready var _autocomplete_make_model = find_child("AutoCompleteAssistant")
 @onready var _autocomplete_power_trans = find_child("AutoCompleteAssistant2")
 @onready var _makes_line: LineEdit = find_child("MakesLineEdit")

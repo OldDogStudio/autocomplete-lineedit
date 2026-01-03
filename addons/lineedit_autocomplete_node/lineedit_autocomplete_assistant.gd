@@ -58,7 +58,7 @@ func add_lineedit(line: LineEdit, terms: Array, source: String = ""):
 	#line.focus_entered.connect(func(): 
 		#new_menu.resize_for_lineedit(line.size, line.global_position, line.get_global_rect())
 		#new_menu.show_menu(line.caret_column))
-	line.focus_entered.connect(_on_focuse_entered.bind(line))
+	line.focus_entered.connect(_on_focus_entered.bind(line))
 	line.focus_exited.connect(new_menu.hide_menu)
 	line.text_changed.connect(_on_text_changed.bind(line))
 	
@@ -223,7 +223,7 @@ func _load_terms_from_file(file_path: String) -> Array:
 
 
 #region Signal Receivers
-func _on_focuse_entered(line: LineEdit) -> void:
+func _on_focus_entered(line: LineEdit) -> void:
 	var menu : CompleteMenu = _lineedit_data[line]["menu"]
 	menu.resize_for_lineedit(line.size, line.global_position, line.get_global_rect())
 	if line.text.length() >= min_char_for_suggestions:
