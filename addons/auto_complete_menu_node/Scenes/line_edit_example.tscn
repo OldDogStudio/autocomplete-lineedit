@@ -16,6 +16,7 @@ script = ExtResource("1_yf5bf")
 [node name="AutoCompleteAssistant" type="Node" parent="." node_paths=PackedStringArray("menu_location_node")]
 script = ExtResource("1_qnd4x")
 menu_location_node = NodePath("../FullCoverageTestControl")
+min_char_for_suggestions = 3
 use_edit_font_size = true
 
 [node name="FullCoverageTestControl" type="ColorRect" parent="."]

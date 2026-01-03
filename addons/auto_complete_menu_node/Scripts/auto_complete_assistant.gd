@@ -26,6 +26,7 @@ extends Node
 @export var disable_west : bool
 
 @export_group("UI parameters")
+@export var min_char_for_suggestions : int = 0
 @export var use_edit_font_size : bool
 
 # key: LineEdit reference			inner-keys: string labels
@@ -56,9 +57,10 @@ func add_lineedit(line: LineEdit, terms: Array, source: String = ""):
 	# Connect signals
 	menu_location_node.resized.connect(func(): new_menu.resize_for_lineedit(line.size, line.global_position, line.get_global_rect()))
 	line.resized.connect(func(): new_menu.resize_for_lineedit(line.size, line.global_position, line.get_global_rect()))
-	line.focus_entered.connect(func(): 
-		new_menu.resize_for_lineedit(line.size, line.global_position, line.get_global_rect())
-		new_menu.show_menu(line.caret_column))
+	#line.focus_entered.connect(func(): 
+		#new_menu.resize_for_lineedit(line.size, line.global_position, line.get_global_rect())
+		#new_menu.show_menu(line.caret_column))
+	line.focus_entered.connect(_on_focuse_entered.bind(line))
 	line.focus_exited.connect(new_menu.hide_menu)
 	line.text_changed.connect(_on_text_changed.bind(line))
 	
@@ -216,6 +218,15 @@ func _load_terms_from_file(file_path: String) -> Array:
 
 
 #region Signal Receivers
+func _on_focuse_entered(line: LineEdit) -> void:
+	var menu : CompleteMenu= _lineedit_data[line]["menu"]
+	menu.resize_for_lineedit(line.size, line.global_position, line.get_global_rect())
+	if line.text.length() >= min_char_for_suggestions:
+		menu.show_menu(line.caret_column)
+	else:
+		menu.hide_menu(true)
+
+
 func _on_option_chosen(text: String, line: LineEdit, menu: CompleteMenu) -> void:
 	var result = menu.on_option_chosen(text, line.text, line.caret_column) 
 	line.text = result["text"]
@@ -226,12 +237,18 @@ func _on_option_chosen(text: String, line: LineEdit, menu: CompleteMenu) -> void
 # If LMB selects CompleteMenu button, LineEdit.text_changed is emitted but not LineEdit.text_submitted.
 # Use this receiver to trigger any function you may want to fire without requiring the user to do more input.
 func _on_text_changed(new_text: String, line: LineEdit) -> void:
+	var menu : CompleteMenu = _lineedit_data[line]["menu"]
+	
 	if new_text in _lineedit_data[line]["terms"]:
 		line.text_submitted.emit(new_text)
 	else:
-		_lineedit_data[line]["menu"].refresh_nodes(new_text, line.caret_column)
-		_lineedit_data[line]["menu"].resize_for_lineedit(line.size, line.global_position, line.get_global_rect())
-
+		menu.refresh_nodes(new_text, line.caret_column)
+		menu.resize_for_lineedit(line.size, line.global_position, line.get_global_rect())
+	
+	if new_text.length() >= min_char_for_suggestions:
+		menu.show_menu(line.caret_column)
+	else:
+		menu.hide_menu(true)
 
 func _on_resized(line: LineEdit) -> void:
 	_lineedit_data[line]["menu"].resize_for_lineedit(line.size, line.global_position, line.get_global_rect())
