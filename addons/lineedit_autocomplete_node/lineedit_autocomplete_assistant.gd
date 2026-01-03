@@ -33,7 +33,6 @@ extends Node
 # inner-value2: CompleteMenu reference
 # {LineEdit-1: {"terms": ["term1", "term2",], "menu": CompleteMenu-1}, LineEdit-2: {"terms": ["term3...
 var _lineedit_data : Dictionary = {}
-var _complete_menu : Resource = preload("res://addons/lineedit_autocomplete_node/autocomplete_menu.tscn")
 
 
 
@@ -123,7 +122,8 @@ func remove_edit(line: LineEdit):
 
 #region Private Functions
 func _create_complete_menu(line: LineEdit) -> CompleteMenu:
-	var new_menu: CompleteMenu = _complete_menu.instantiate()
+	var menu_scene : Resource = preload("res://addons/lineedit_autocomplete_node/autocomplete_menu.tscn")
+	var new_menu: CompleteMenu = menu_scene.instantiate()
 	add_child(new_menu)
 	
 	# Set parameters
