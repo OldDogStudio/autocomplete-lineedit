@@ -1,5 +1,6 @@
 @tool
 extends Node
+class_name LineEditAutoCompleteAssist
 
 # ########################################################################### #
 #    THIS IS A FORKED PROJECT. The original source is code from "Lenrow". Any
