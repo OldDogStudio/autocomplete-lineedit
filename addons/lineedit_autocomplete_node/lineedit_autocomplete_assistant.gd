@@ -242,7 +242,8 @@ func _on_option_chosen(text: String, line: LineEdit, menu: CompleteMenu) -> void
 	# Known Godot issue inherited by Redot--sometimes text_changed won't emit when text programtically changed.
 	line.text_changed.emit(line.text)
 	line.grab_focus()
-	line.caret_column = result["caret"]
+	line.caret_column = 0
+	
 	menu.hide_menu(true)
 
 

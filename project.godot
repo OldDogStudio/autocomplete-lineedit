@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="line-edit-complete-godot"
-run/main_scene="res://addons/lineedit_autocomplete_node/Example/autocomplete_example.tscn"
+run/main_scene="res://Example/autocomplete_example.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://addons/lineedit_autocomplete_node/Assets/lineedit-autocomplete-icon.png"
 
