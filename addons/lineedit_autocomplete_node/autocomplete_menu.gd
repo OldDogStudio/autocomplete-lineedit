@@ -124,22 +124,22 @@ func load_terms(terms: Array, override_terms: bool = false) -> void:
 
 ## applies the [param text] chosen in the menu to the edits text
 ## is called by the option_chosen signal in the option_button
-func on_option_chosen(option_text: String, whole_line_text: String, caret_col: int) -> Dictionary:
-	var text_parts = whole_line_text.split(" ")
-	var t_length = 0
-	var whitespace_i = 0
-	var new_column_pos = whole_line_text.length()
-	for i in text_parts.size():
-		t_length += text_parts[i].length()
-		if _current_text == text_parts[i] and t_length + whitespace_i >= caret_col:
-			text_parts[i] = option_text
-			new_column_pos = " ".join(PackedStringArray(text_parts.slice(0, i))).length() + \
-					option_text.length() + (0 if i == 0 else 1)
-			break
-		whitespace_i += 1
-	var return_text = " ".join(PackedStringArray(text_parts))
-	hide_menu(true)
-	return {"text": return_text, "caret": new_column_pos}
+#func on_option_chosen(option_text: String, whole_line_text: String, caret_col: int) -> Dictionary:
+	#var text_parts = whole_line_text.split(" ")
+	#var t_length = 0
+	#var whitespace_i = 0
+	#var new_column_pos = whole_line_text.length()
+	#for i in text_parts.size():
+		#t_length += text_parts[i].length()
+		#if _current_text == text_parts[i] and t_length + whitespace_i >= caret_col:
+			#text_parts[i] = option_text
+			#new_column_pos = " ".join(PackedStringArray(text_parts.slice(0, i))).length() + \
+					#option_text.length() + (0 if i == 0 else 1)
+			#break
+		#whitespace_i += 1
+	#var return_text = " ".join(PackedStringArray(text_parts))
+	#hide_menu(true)
+	#return {"text": return_text, "caret": new_column_pos}
 	
 
 # Recalculates size and position when container or associate LineEdit changes.

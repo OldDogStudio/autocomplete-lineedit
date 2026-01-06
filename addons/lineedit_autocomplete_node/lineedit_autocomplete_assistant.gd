@@ -9,6 +9,7 @@ class_name LineEditAutoCompleteAssist
 
 const _MENU : String = "menu"
 const _TERMS : String = "terms"
+const _STRICT : String = "strict"
 
 ## "defines in which node the menu should be located. [br]
 ## This node has to contain the line_edit(s) you want it to appear for. [br]
@@ -30,7 +31,8 @@ const _TERMS : String = "terms"
 
 @export_group("UI parameters")
 @export var min_char_for_suggestions : int = 0
-@export var use_edit_font_size : bool
+@export var use_edit_font_size : bool = true
+
 
 # key: LineEdit reference			inner-keys: string labels
 # inner-value1: an array of Strings
@@ -42,29 +44,21 @@ var _lineedit_data : Dictionary = {}
 
 #region Engine Functions
 func _ready() -> void:
-	pass
+	if menu_location_node == null:
+		menu_location_node = get_parent()
 
 #endregion
 
 
 #region Public Functions
 # Adds LineEdit to provide autocompletion for and subsequently creates the CompleteMenu for it
-func add_lineedit(line: LineEdit, terms: Array, source: String = ""):
+func add_lineedit(line: LineEdit, strict: bool, terms: Array, source: String = ""):
 	if _lineedit_data.has(line):
 		assert(false, "ERROR: Trying to add LineEdit which AutoCompleAssistant already has.")
 		return
 	
 	# CompleteMenu component
 	var new_menu = _create_complete_menu(line)
-	# Connect signals
-	menu_location_node.resized.connect(func(): new_menu.resize_for_lineedit(line.size, line.global_position, line.get_global_rect()))
-	line.resized.connect(func(): new_menu.resize_for_lineedit(line.size, line.global_position, line.get_global_rect()))
-	#line.focus_entered.connect(func(): 
-		#new_menu.resize_for_lineedit(line.size, line.global_position, line.get_global_rect())
-		#new_menu.show_menu(line.caret_column))
-	line.focus_entered.connect(_on_focus_entered.bind(line))
-	line.focus_exited.connect(new_menu.hide_menu)
-	line.text_changed.connect(_on_text_changed.bind(line))
 	
 	# Terms component
 	var file_terms = []
@@ -77,11 +71,22 @@ func add_lineedit(line: LineEdit, terms: Array, source: String = ""):
 		final_terms.append_array(file_terms)
 	
 	# Update dictionary
-	_lineedit_data[line] = {_TERMS: final_terms, _MENU: new_menu}
+	_lineedit_data[line] = {
+		_TERMS: final_terms,
+		_MENU: new_menu,
+		_STRICT: strict,
+		}
 	
 	# Populate menu
 	new_menu.load_terms(final_terms)
 	
+	# Connect signals
+	menu_location_node.resized.connect(func(): new_menu.resize_for_lineedit(line.size, line.global_position, line.get_global_rect()))
+	line.resized.connect(func(): new_menu.resize_for_lineedit(line.size, line.global_position, line.get_global_rect()))
+	line.focus_entered.connect(_on_focus_entered.bind(line))
+	line.focus_exited.connect(new_menu.hide_menu)
+	line.text_changed.connect(_on_text_changed.bind(line))
+	line.text_submitted.connect(_on_text_submitted.bind(line))
 	# Connect all option buttons to signal receiver
 	for button in new_menu.get_term_option_buttons(CompleteMenu.OPTION_CONTAINERS.ALL):
 		if not button.option_chosen.is_connected(_on_option_chosen):
@@ -237,13 +242,11 @@ func _on_focus_entered(line: LineEdit) -> void:
 
 
 func _on_option_chosen(text: String, line: LineEdit, menu: CompleteMenu) -> void:
-	var result = menu.on_option_chosen(text, line.text, line.caret_column) 
-	line.text = result["text"]
+	line.text = text
 	# Known Godot issue inherited by Redot--sometimes text_changed won't emit when text programtically changed.
 	line.text_changed.emit(line.text)
 	line.grab_focus()
 	line.caret_column = 0
-	
 	menu.hide_menu(true)
 
 
@@ -262,6 +265,15 @@ func _on_text_changed(new_text: String, line: LineEdit) -> void:
 		menu.show_menu(line.caret_column)
 	else:
 		menu.hide_menu(true)
+
+
+func _on_text_submitted(text: String, line: LineEdit) -> void:
+	if _lineedit_data[line][_STRICT]:
+		if not text in _lineedit_data[line][_TERMS]:
+			line.clear()
+			line.text_change_rejected.emit(text)
+	pass
+
 
 func _on_resized(line: LineEdit) -> void:
 	_lineedit_data[line][_MENU].resize_for_lineedit(line.size, line.global_position, line.get_global_rect())

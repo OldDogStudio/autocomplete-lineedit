@@ -21,13 +21,13 @@ func _init():
 
 func _ready() -> void:
 	# setup MakeLineEdit
-	_autocomplete_make_model.add_lineedit(_makes_line, [_FORD, _HONDA, _MAZDA, _TOYOTA])
+	_autocomplete_make_model.add_lineedit(_makes_line, true, [_FORD, _HONDA, _MAZDA, _TOYOTA])
 	# setup ModelsLineEdit
-	_autocomplete_make_model.add_lineedit(_models_line, [])
+	_autocomplete_make_model.add_lineedit(_models_line, false, [])
 	# setup PowerLineEdit
-	_autocomplete_power_trans.add_lineedit(_power_line, ["Gasoline Engine", "Diesel Engine", "Electric", "Hybrid"])
+	_autocomplete_power_trans.add_lineedit(_power_line, true, ["Gasoline Engine", "Diesel Engine", "Electric", "Hybrid"])
 	# setup TransmissionLineEdit
-	_autocomplete_power_trans.add_lineedit(_trans_line, ["Discrete Automatic", "Continuously-Variable Automatic", "Manual"])
+	_autocomplete_power_trans.add_lineedit(_trans_line, true, ["Discrete Automatic", "Continuously-Variable Automatic", "Manual"])
 
 
 #func _process(delta: float) -> void:
