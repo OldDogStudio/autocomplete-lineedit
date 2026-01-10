@@ -54,11 +54,11 @@ func _on_makes_line_edit_text_submitted(new_text: String) -> void:
 		_FORD:				# (another) array example
 			array = ["Focus", "Model T", "Ranger"]
 		_HONDA:				# json dictionary example
-			path = "res://addons/lineedit_autocomplete_node/Example/honda_models.json"
+			path = "res://Example/honda_models.json"
 		_MAZDA:				# json array example
-			path = "res://addons/lineedit_autocomplete_node/Example/mazda_models.json"
+			path = "res://Example/mazda_models.json"
 		_TOYOTA:			# txt example
-			path = "res://addons/lineedit_autocomplete_node/Example/toyota_models.txt"
+			path = "res://Example/toyota_models.txt"
 	
 	_autocomplete_make_model.load_terms(_models_line, array, path, true)
 
