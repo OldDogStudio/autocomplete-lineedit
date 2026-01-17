@@ -165,8 +165,11 @@ func _get_location_boundaries(line: LineEdit):
 	var location_rect = menu_location_node.get_global_rect()
 	var edit_rect = line.get_global_rect()
 	if not location_rect.intersects(edit_rect):
-		assert(false, "ERROR: NODE CONFIGURATION ERROR; EDIT NOT WITHIN LOCATION_NODE")
-		return null
+		if not _has_scroll_ancestor(line, menu_location_node):
+			assert(false, "ERROR: NODE CONFIGURATION ERROR; EDIT NOT WITHIN LOCATION_NODE")
+			return null
+		else:
+			edit_rect = Rect2(location_rect.position, line.size)
 	
 	var direction_rects = Helpers.subtract_rects(location_rect, edit_rect)
 	var values = direction_rects["Values"]
@@ -201,6 +204,17 @@ func _get_menu_placement_vec(line: LineEdit, direction):
 		
 	# TODO: add margins or stuff -Lenrow
 	return result
+
+
+func _has_scroll_ancestor(line: LineEdit, location: Control) -> bool:
+	var current_node : Node = line.get_parent()
+	while current_node:
+		if current_node is ScrollContainer:
+			return true
+		if current_node == location:
+			break
+		current_node = current_node.get_parent()
+	return false
 
 
 func _load_terms_from_file(file_path: String) -> Array:
