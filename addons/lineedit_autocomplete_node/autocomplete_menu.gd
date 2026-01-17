@@ -34,7 +34,7 @@ var _grow_upwards : bool = false
 #endregion
 
 #region containers
-var _lineedit_path : NodePath
+var _lineedit : LineEdit
 var _visible_nodes : Array[Control] ## all the term-nodes that are currently visible   -Lenrow
 var _all_nodes : Array[Control] ## all the term nodes, one for each term   -Lenrow
 var _all_active_terms : Array = [] ## all loaded terms in one array   -Lenrow
@@ -122,26 +122,6 @@ func load_terms(terms: Array, override_terms: bool = false) -> void:
 	refresh_nodes(_current_text)
 
 
-## applies the [param text] chosen in the menu to the edits text
-## is called by the option_chosen signal in the option_button
-#func on_option_chosen(option_text: String, whole_line_text: String, caret_col: int) -> Dictionary:
-	#var text_parts = whole_line_text.split(" ")
-	#var t_length = 0
-	#var whitespace_i = 0
-	#var new_column_pos = whole_line_text.length()
-	#for i in text_parts.size():
-		#t_length += text_parts[i].length()
-		#if _current_text == text_parts[i] and t_length + whitespace_i >= caret_col:
-			#text_parts[i] = option_text
-			#new_column_pos = " ".join(PackedStringArray(text_parts.slice(0, i))).length() + \
-					#option_text.length() + (0 if i == 0 else 1)
-			#break
-		#whitespace_i += 1
-	#var return_text = " ".join(PackedStringArray(text_parts))
-	#hide_menu(true)
-	#return {"text": return_text, "caret": new_column_pos}
-	
-
 # Recalculates size and position when container or associate LineEdit changes.
 # External use.
 func resize_for_lineedit(line_size: Vector2, line_gpos: Vector2, line_grect: Rect2) -> void:
@@ -186,11 +166,11 @@ func refresh_nodes(text: String, caret_column: int = 0) -> void:
 	
 	if _visible_nodes:
 		if _grow_upwards:
-			get_node(_lineedit_path).focus_neighbor_top = _visible_nodes[0].get_node("Button").get_path()
-			_visible_nodes[0].get_node("Button").focus_neighbor_bottom = _lineedit_path
+			_lineedit.focus_neighbor_top = _visible_nodes[0].get_node("Button").get_path()
+			_visible_nodes[0].get_node("Button").focus_neighbor_bottom = _lineedit.get_path()
 		else:
-			get_node(_lineedit_path).focus_neighbor_bottom = _visible_nodes[0].get_node("Button").get_path()
-			_visible_nodes[0].get_node("Button").focus_neighbor_top = _lineedit_path
+			_lineedit.focus_neighbor_bottom = _visible_nodes[0].get_node("Button").get_path()
+			_visible_nodes[0].get_node("Button").focus_neighbor_top = _lineedit.get_path()
 	
 	# part of show_menu(), duplicated here to avoid needing to stop recursion.
 	self.visible = true
@@ -207,16 +187,16 @@ func set_transform_values(margin: int, min_size: Vector2, mult_size: Vector2) ->
 		_size_mult = mult_size
 
 
-func set_up_menu(placement_point: Vector2, direction_main: Enums.Direction, direction_sub: Enums.Direction, \
-			maximum_size: Vector2, line_size: Vector2, line_path: NodePath, font_size: int) -> void:
+func set_up_menu(line: LineEdit, placement_point: Vector2, direction_main: Enums.Direction, \
+		direction_sub: Enums.Direction, maximum_size: Vector2, font_size: int) -> void:
+	_lineedit = line
 	_main_direction = direction_main
 	_anchor_point = placement_point
 	_grow_upwards = direction_sub == Enums.Direction.NORTH
 	_size_max = maximum_size
-	_lineedit_path = line_path
 	_font_size = font_size
 	
-	_resize(line_size * _size_mult)
+	_resize(line.size * _size_mult)
 	refresh_nodes("")
 
 
@@ -310,13 +290,16 @@ func _resize(new_size: Vector2) -> void:
 ## default lineEdit key behavior
 ## Lenrow^
 func _input(event):
+	if _lineedit == null:
+		return
+	
 	if event is InputEventKey:
 		var select_nav_button = "ui_up" if _grow_upwards else "ui_down"
 		var back_nav_button = "ui_down" if _grow_upwards else "ui_up"
-		var line_focus_neighbor = get_node(_lineedit_path).focus_neighbor_top if _grow_upwards \
-				else get_node(_lineedit_path).focus_neighbor_bottom
+		var line_focus_neighbor = _lineedit.focus_neighbor_top if _grow_upwards \
+				else _lineedit.focus_neighbor_bottom
 	
-		if not get_node(_lineedit_path).has_focus():
+		if not _lineedit.has_focus():
 			return
 	
 		if event.is_action_pressed(select_nav_button) and not _is_in_selection and _visible_nodes:
@@ -330,9 +313,9 @@ func _input(event):
 	if event is InputEventMouseButton:
 		if event.is_released():
 			if not (get_global_rect().has_point(get_global_mouse_position()) \
-					or get_node(_lineedit_path).get_global_rect().has_point(get_global_mouse_position())):
-				if get_node(_lineedit_path).has_focus():
-					get_node(_lineedit_path).release_focus()
+					or _lineedit.get_global_rect().has_point(get_global_mouse_position())):
+				if _lineedit.has_focus():
+					_lineedit.release_focus()
 				else:
 					hide_menu(true)
 

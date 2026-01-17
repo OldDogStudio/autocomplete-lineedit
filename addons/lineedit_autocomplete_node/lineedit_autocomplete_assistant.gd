@@ -39,6 +39,7 @@ const _STRICT : String = "strict"
 # inner-value2: CompleteMenu reference
 # {LineEdit-1: {"terms": ["term1", "term2",], "menu": CompleteMenu-1}, LineEdit-2: {"terms": ["term3...
 var _lineedit_data : Dictionary = {}
+var _catch
 
 
 
@@ -81,16 +82,16 @@ func add_lineedit(line: LineEdit, strict: bool, terms: Array, source: String = "
 	new_menu.load_terms(final_terms)
 	
 	# Connect signals
-	menu_location_node.resized.connect(func(): new_menu.resize_for_lineedit(line.size, line.global_position, line.get_global_rect()))
-	line.resized.connect(func(): new_menu.resize_for_lineedit(line.size, line.global_position, line.get_global_rect()))
-	line.focus_entered.connect(_on_focus_entered.bind(line))
-	line.focus_exited.connect(new_menu.hide_menu)
-	line.text_changed.connect(_on_text_changed.bind(line))
-	line.text_submitted.connect(_on_text_submitted.bind(line))
+	_catch = menu_location_node.resized.connect(func(): new_menu.resize_for_lineedit(line.size, line.global_position, line.get_global_rect()))
+	_catch = line.resized.connect(func(): new_menu.resize_for_lineedit(line.size, line.global_position, line.get_global_rect()))
+	_catch = line.focus_entered.connect(_on_focus_entered.bind(line))
+	_catch = line.focus_exited.connect(new_menu.hide_menu)
+	_catch = line.text_changed.connect(_on_text_changed.bind(line))
+	_catch = line.text_submitted.connect(_on_text_submitted.bind(line))
 	# Connect all option buttons to signal receiver
 	for button in new_menu.get_term_option_buttons(CompleteMenu.OPTION_CONTAINERS.ALL):
 		if not button.option_chosen.is_connected(_on_option_chosen):
-			button.option_chosen.connect(_on_option_chosen.bind(line, new_menu))
+			_catch = button.option_chosen.connect(_on_option_chosen.bind(line, new_menu))
 	
 	# Hide until needed
 	new_menu.hide_menu(true)
@@ -115,7 +116,7 @@ func load_terms(line: LineEdit, terms: Array, source: String = "", replace: bool
 	var menu : CompleteMenu = _lineedit_data[line][_MENU]
 	for button in menu.get_term_option_buttons(CompleteMenu.OPTION_CONTAINERS.ALL):
 		if not button.option_chosen.is_connected(_on_option_chosen):
-			button.option_chosen.connect(_on_option_chosen.bind(line, menu))
+			_catch = button.option_chosen.connect(_on_option_chosen.bind(line, menu))
 
 
 # Remove a LineEdit from autocompletion support.
@@ -145,8 +146,8 @@ func _create_complete_menu(line: LineEdit) -> CompleteMenu:
 		if theme_font:
 			font_size = theme_font
 	new_menu.set_transform_values(margin, size_min, size_mult)
-	new_menu.set_up_menu(placement_point, direction, location_info[1], location_info[2], line.size, \
-			line.get_path(), font_size)
+	new_menu.set_up_menu(line, placement_point, direction, location_info[1], location_info[2], \
+			font_size)
 	
 	return new_menu
 
