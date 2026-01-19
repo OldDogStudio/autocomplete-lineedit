@@ -188,16 +188,18 @@ func set_transform_values(margin: int, min_size: Vector2, mult_size: Vector2) ->
 
 
 func set_up_menu(line: LineEdit, placement_point: Vector2, direction_main: Enums.Direction, \
-		direction_sub: Enums.Direction, maximum_size: Vector2, font_size: int) -> void:
+		maximum_size: Vector2, font_size: int) -> void:
 	_lineedit = line
 	_main_direction = direction_main
 	_anchor_point = placement_point
-	_grow_upwards = direction_sub == Enums.Direction.NORTH
+	_grow_upwards = direction_main == Enums.Direction.NORTH
 	_size_max = maximum_size
 	_font_size = font_size
 	
 	_resize(line.size * _size_mult)
 	refresh_nodes("")
+	if direction_main == Enums.Direction.SOUTH:
+		pass
 
 
 func show_menu(caret_col: int) -> void:
